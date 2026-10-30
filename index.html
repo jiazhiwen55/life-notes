@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人生笔记</title>
+<meta name="description" content="运营X / 闲鱼 / 读书 / 学WorkBuddy · 每天记录，周月总结">
+<meta name="theme-color" content="#1F5C8B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="人生笔记">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<style>
+  :root{
+    --bg:#F2F6FA;
+    --card:#FFFFFF;
+    --ink:#1D2B38;
+    --ink-soft:#5A6B7A;
+    --line:#E2EAF1;
+    --brand:#1F5C8B;
+    --brand-soft:#C4E2F3;
+    --ok:#2E7D5B;
+    --err:#C0453B;
+    --x:#2B6CB0;
+    --xy:#C05621;
+    --read:#2E7D5B;
+    --wb:#6B46C1;
+    --radius:14px;
+    --safe-t:env(safe-area-inset-top,0px);
+    --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+    font-size:15px;line-height:1.6;
+    padding:calc(var(--safe-t) + 8px) 0 calc(var(--safe-b) + 92px);
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 14px;}
+  header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:14px 0 10px;}
+  header.top h1{margin:0;font-size:22px;letter-spacing:.5px;}
+  header.top .sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .icon-btn{
+    width:38px;height:38px;border-radius:11px;border:1px solid var(--line);
+    background:#fff;color:var(--ink-soft);font-size:16px;display:flex;
+    align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;
+  }
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 15px 18px;margin-bottom:14px;
+    box-shadow:0 1px 2px rgba(29,43,56,.04);
+  }
+  .card h2{margin:0 0 3px;font-size:16px;letter-spacing:.4px;}
+  .card .desc{color:var(--ink-soft);font-size:12px;margin:0 0 13px;}
+
+  /* ===== 一级标题色块 ===== */
+  .sec-head{
+    display:flex;align-items:center;gap:9px;
+    margin:20px 0 13px;padding:10px 14px;border-radius:11px;
+    font-size:15.5px;font-weight:700;letter-spacing:.6px;
+    border-left:5px solid transparent;
+  }
+  .sec-head .ico{
+    width:24px;height:24px;border-radius:7px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;color:#fff;
+  }
+  .sec-head.x{background:#E5EDF8;color:#2B6CB0;border-left-color:#2B6CB0;}
+  .sec-head.x .ico{background:#2B6CB0;}
+  .sec-head.xy{background:#FBEEE0;color:#C05621;border-left-color:#C05621;}
+  .sec-head.xy .ico{background:#C05621;}
+  .sec-head.read{background:#E5F2EC;color:#2E7D5B;border-left-color:#2E7D5B;}
+  .sec-head.read .ico{background:#2E7D5B;}
+  .sec-head.wb{background:#EFE9FA;color:#6B46C1;border-left-color:#6B46C1;}
+  .sec-head.wb .ico{background:#6B46C1;}
+  .sec-head.data{background:#E7F0F7;color:#1F5C8B;border-left-color:#1F5C8B;}
+  .sec-head.data .ico{background:#1F5C8B;}
+  .sec-head.review{background:#F7EFE3;color:#8A5A16;border-left-color:#B8862F;}
+  .sec-head.review .ico{background:#B8862F;}
+  .sec-head.diary{background:#F9E9F0;color:#C2185B;border-left-color:#C2185B;}
+  .sec-head.diary .ico{background:#C2185B;}
+  .sec-head.sport{background:#E3F2F5;color:#0E7490;border-left-color:#0E7490;}
+  .sec-head.sport .ico{background:#0E7490;}
+
+  .f-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field.full{grid-column:1 / -1;}
+  .field label{font-size:12px;color:var(--ink-soft);font-weight:600;}
+  .field input,.field select,.field textarea{
+    font-family:inherit;font-size:16px;color:var(--ink);
+    padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#FCFDFE;
+    width:100%;-webkit-appearance:none;appearance:none;
+  }
+  .field textarea{
+    resize:none;min-height:74px;line-height:1.6;
+    overflow-y:hidden;max-height:70vh;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(31,92,139,.1);
+  }
+  .row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+
+  /* 自动累加数据格 */
+  .auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .auto-cell{background:#F7FBFE;border:1px solid var(--line);border-radius:10px;padding:10px 11px;text-align:center;}
+  .auto-cell .al{font-size:11px;color:var(--ink-soft);margin-bottom:2px;}
+  .auto-cell .av{font-size:17px;font-weight:700;color:#1F5C8B;letter-spacing:.3px;}
+  .auto-note{font-size:11.5px;color:var(--ink-soft);margin-top:9px;display:flex;align-items:center;gap:5px;}
+  .auto-note .dot2{width:6px;height:6px;border-radius:50%;background:#4A9FD0;flex:0 0 auto;}
+
+  .form-foot{display:flex;align-items:center;gap:11px;margin-top:18px;flex-wrap:wrap;}
+  .btn-primary{
+    font-family:inherit;font-size:15px;font-weight:700;color:#fff;background:var(--brand);
+    border:none;border-radius:11px;padding:12px 26px;cursor:pointer;flex:1 1 auto;
+  }
+  .btn-primary:disabled{background:#9DB4C6;}
+  .btn-ghost{
+    font-family:inherit;font-size:13px;color:var(--ink-soft);background:#fff;
+    border:1px solid var(--line);border-radius:11px;padding:11px 15px;cursor:pointer;
+  }
+  .hint{font-size:12px;color:var(--ink-soft);}
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .kpi{background:#F7FBFE;border:1px solid var(--line);border-radius:12px;padding:11px 12px;}
+  .kpi .k-label{font-size:11px;color:var(--ink-soft);margin-bottom:3px;}
+  .kpi .k-value{font-size:19px;font-weight:700;color:var(--brand);letter-spacing:.3px;}
+  .kpi.x .k-value{color:var(--x);} .kpi.xy .k-value{color:var(--xy);}
+  .kpi.read .k-value{color:var(--read);} .kpi.wb .k-value{color:var(--wb);}
+  .chart{display:flex;align-items:flex-end;gap:5px;height:110px;margin-top:6px;padding:6px 0 0;border-bottom:1px solid var(--line);}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .bar{width:100%;max-width:26px;background:linear-gradient(180deg,#E8A05C,var(--xy));border-radius:4px 4px 0 0;min-height:3px;}
+  .bar-lab{font-size:9.5px;color:var(--ink-soft);margin-top:4px;white-space:nowrap;}
+  .rec-list{display:flex;flex-direction:column;gap:9px;}
+  .rec{border:1px solid var(--line);border-radius:12px;padding:0;background:#FCFDFE;overflow:hidden;}
+  .rec-head{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;padding:13px 14px;
+    cursor:pointer;-webkit-user-select:none;user-select:none;transition:background .15s;
+  }
+  .rec-head:active{background:#F1F7FB;}
+  .rec.open .rec-head{border-bottom:1px solid var(--line);background:#F7FBFE;}
+  .rec-head .chev{
+    margin-left:auto;color:#9AA8B5;font-size:17px;line-height:1;
+    transition:transform .18s ease;transform-origin:50% 50%;
+  }
+  .rec.open .rec-head .chev{transform:rotate(90deg);color:var(--brand);}
+  .rec-body{display:none;padding:10px 14px 14px;}
+  .rec.open .rec-body{display:block;}
+  .rec-act{margin-top:12px;display:flex;gap:8px;}
+  .rec-act .btn-ghost{font-size:12px;padding:7px 14px;}
+  .r-date{font-weight:700;color:var(--brand);font-size:14px;}
+  .r-tag{font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;display:none;}
+  .rec.open .r-tag{display:inline-block;}
+  .tag-x{background:#E4EDF7;color:var(--x);} .tag-xy{background:#FBEEE0;color:var(--xy);}
+  .tag-read{background:#E5F2EC;color:var(--read);} .tag-wb{background:#EFE9FA;color:var(--wb);}
+  .tag-diary{background:#F9E9F0;color:#C2185B;}
+  .tag-sport{background:#E3F2F5;color:#0E7490;}
+  .rec-block{font-size:12.5px;color:var(--ink-soft);margin-top:6px;padding-left:9px;border-left:2px solid var(--line);}
+  .rec-block .bl{font-weight:700;display:block;margin-bottom:1px;font-size:11.5px;}
+  .rec-block.x{border-left-color:var(--x);} .rec-block.x .bl{color:var(--x);}
+  .rec-block.xy{border-left-color:var(--xy);} .rec-block.xy .bl{color:var(--xy);}
+  .rec-block.read{border-left-color:var(--read);} .rec-block.read .bl{color:var(--read);}
+  .rec-block.wb{border-left-color:var(--wb);} .rec-block.wb .bl{color:var(--wb);}
+  .rec-block.diary{border-left-color:#C2185B;} .rec-block.diary .bl{color:#C2185B;}
+  .rec-stats{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+  .chip{font-size:11.5px;background:#EFF6FB;border:1px solid #DCEAF4;color:var(--ink-soft);border-radius:7px;padding:3px 8px;}
+  .chip b{color:var(--brand);}
+  .pager{display:flex;align-items:center;justify-content:center;gap:11px;margin-top:14px;}
+  .empty,.loading{text-align:center;color:var(--ink-soft);font-size:13px;padding:22px 10px;}
+  .toast{
+    position:fixed;left:50%;bottom:calc(var(--safe-b) + 24px);transform:translateX(-50%);
+    background:var(--ink);color:#fff;font-size:13.5px;padding:10px 20px;border-radius:10px;
+    opacity:0;pointer-events:none;transition:opacity .25s;max-width:88%;z-index:50;
+  }
+  .toast.show{opacity:.94;} .toast.err{background:var(--err);} .toast.ok{background:var(--ok);}
+  .tabbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    padding:7px 4px calc(var(--safe-b) + 7px);display:flex;
+  }
+  .tabbar button{
+    flex:1;border:none;background:transparent;font-family:inherit;
+    font-size:11px;color:var(--ink-soft);cursor:pointer;padding:4px 1px;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+  }
+  .tabbar button .ti{font-size:18px;line-height:1;}
+  .tabbar button.on{color:var(--brand);font-weight:700;}
+  .view{display:none;} .view.on{display:block;}
+  .lock{
+    position:fixed;inset:0;background:var(--bg);z-index:60;
+    display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+  .lock-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;max-width:380px;width:100%;}
+  .lock-card h3{margin:0 0 6px;font-size:17px;}
+  .lock-card p{margin:0 0 14px;font-size:13px;color:var(--ink-soft);}
+  .lock-card input{width:100%;font-family:inherit;font-size:16px;padding:11px;border:1px solid var(--line);border-radius:10px;margin-bottom:11px;}
+  .offline-bar{display:none;background:#FDF3E3;color:#8A5A16;font-size:12px;padding:7px 14px;text-align:center;border-bottom:1px solid #F2DDBE;}
+  .offline-bar.on{display:block;}
+  @media (min-width:640px){
+    .kpi-grid{grid-template-columns:repeat(6,1fr);}
+    .wrap{padding:0 18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="offline-bar" id="offlineBar">离线中 · 记录会先存在本机，联网后自动补传</div>
+
+<div class="lock" id="lockView">
+  <div class="lock-card">
+    <h3>访问令牌</h3>
+    <p>填一次 GitHub 令牌，之后这台设备就记住了。令牌只存在本机，不会上传。</p>
+    <input type="password" id="codeInput" placeholder="ghp_ 开头的令牌" autocomplete="off">
+    <button class="btn-primary" id="codeBtn" style="width:100%">进入</button>
+    <p id="codeErr" style="margin-top:10px;color:#C0453B;font-size:12.5px;display:none"></p>
+    <p id="envWarn" style="margin-top:10px;color:#C0453B;font-size:12px;line-height:1.7;display:none"></p>
+    <p id="diagLine" style="margin-top:10px;font-size:10.5px;color:#A6B2BE;line-height:1.6;word-break:break-all"></p>
+    <p style="margin:14px 0 0;font-size:11.5px;color:#8A97A3;line-height:1.7">
+      数据存在你 GitHub 的私有仓库里，只有拿着令牌才能读写。<br>
+      换设备时，在这台新设备上重新填一次同一个令牌即可。
+    </p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>人生笔记</h1>
+      <div class="sub">运营X · 闲鱼 · 读书 · 学WorkBuddy · 日记</div>
+    </div>
+    <button class="icon-btn" id="reloadBtn" title="刷新">⟳</button>
+  </header>
+
+  <!-- ========== 每日记录 ========== -->
+  <div class="view on" id="view-daily">
+    <div class="card">
+      <form id="dailyForm" autocomplete="off">
+        <div class="f-grid" style="margin-bottom:2px">
+          <div class="field">
+            <label for="f_date">日期</label>
+            <input type="date" id="f_date" name="f_date">
+          </div>
+        </div>
+
+        <div class="sec-head x"><span class="ico">X</span>运营 X</div>
+        <div class="f-grid">
+          <div class="field full">
+            <textarea id="f_xReview" name="f_xReview" placeholder="今天发的内容哪里能更好？下一条改什么？"></textarea>
+          </div>
+          <div class="row-3 full">
+            <div class="field">
+              <label for="f_xPosts">发帖</label>
+              <input type="number" id="f_xPosts" name="f_xPosts" min="0" step="1" inputmode="numeric" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f_xFans">涨粉</label>
+              <input type="number" id="f_xFans" name="f_xFans" min="0" step="1" inputmode="numeric" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f_xInteractions">互动</label>
+              <input type="number" id="f_xInteractions" name="f_xInteractions" min="0" step="1" inputmode="numeric" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-head xy"><span class="ico">闲</span>闲鱼运营</div>
+        <div class="f-grid">
+          <div class="field">
+            <label for="f_xyIncome">今日收入（元）</label>
+            <input type="number" id="f_xyIncome" name="f_xyIncome" min="0" step="0.01" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field full">
+            <textarea id="f_xyReview" name="f_xyReview" placeholder="今天出单/没出单的原因？选品、标题、客服哪一步可以改？"></textarea>
+          </div>
+        </div>
+
+        <div class="sec-head read"><span class="ico">读</span>读书</div>
+        <div class="f-grid">
+          <div class="field full">
+            <label for="f_readContent">学习内容</label>
+            <textarea id="f_readContent" name="f_readContent" placeholder="今天读了什么？哪一章 / 哪个观点？"></textarea>
+          </div>
+          <div class="field full">
+            <label for="f_readReview">反思</label>
+            <textarea id="f_readReview" name="f_readReview" placeholder="这个观点对我有什么用？跟手上的事怎么接上？"></textarea>
+          </div>
+          <div class="field">
+            <label for="f_readMinutes">有效学习时长（分钟）</label>
+            <input type="number" id="f_readMinutes" name="f_readMinutes" min="0" step="1" inputmode="numeric" placeholder="0">
+          </div>
+        </div>
+
+        <div class="sec-head wb"><span class="ico">WB</span>学习 WorkBuddy</div>
+        <div class="f-grid">
+          <div class="field">
+            <label for="f_wbMinutes">时长（分钟）</label>
+            <input type="number" id="f_wbMinutes" name="f_wbMinutes" min="0" step="1" inputmode="numeric" placeholder="0">
+          </div>
+          <div class="field full">
+            <label for="f_wbContent">学会的主要内容</label>
+            <textarea id="f_wbContent" name="f_wbContent" placeholder="今天搞懂了什么？还卡在哪？"></textarea>
+          </div>
+        </div>
+
+        <div class="sec-head sport"><span class="ico">动</span>运动</div>
+        <div class="f-grid">
+          <div class="field">
+            <label for="f_sportMinutes">时长（分钟）</label>
+            <input type="number" id="f_sportMinutes" name="f_sportMinutes" min="0" step="1" inputmode="numeric" placeholder="0">
+          </div>
+        </div>
+
+        <div class="sec-head diary"><span class="ico">记</span>日记</div>
+        <div class="f-grid">
+          <div class="field full">
+            <label for="f_diary">今日随手记</label>
+            <textarea id="f_diary" name="f_diary" placeholder="今天随手记点什么？一个想法、一个瞬间、一句想留住的话…"></textarea>
+          </div>
+        </div>
+
+        <div class="form-foot">
+          <button type="submit" class="btn-primary" id="submitBtn">保存今日记录</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>历史记录</h2>
+      <p class="desc">按日期倒序，点日期展开查看，展开后可载入修改</p>
+      <div class="rec-list" id="dailyList"><div class="loading">加载中…</div></div>
+      <div class="pager">
+        <button type="button" class="btn-ghost" id="dPrev">上一页</button>
+        <span class="hint" id="dPage">第 1 页</span>
+        <button type="button" class="btn-ghost" id="dNext">下一页</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 周小结 ========== -->
+  <div class="view" id="view-weekly">
+    <div class="card">
+      <form id="weeklyForm" autocomplete="off">
+        <div class="f-grid">
+          <div class="field">
+            <label for="f_weekStart">周起始日（周一）</label>
+            <input type="date" id="f_weekStart" name="f_weekStart">
+          </div>
+          <div class="field">
+            <label for="f_wTitle">本周标题</label>
+            <input type="text" id="f_wTitle" name="f_wTitle" placeholder="例：把闲鱼出单率跑顺了">
+          </div>
+        </div>
+
+        <div class="sec-head data"><span class="ico">数</span>本周数据</div>
+        <div class="auto-grid" id="weekAutoStats">
+          <div class="auto-cell"><div class="al">涨粉</div><div class="av" id="wa_fans">0</div></div>
+          <div class="auto-cell"><div class="al">闲鱼收入</div><div class="av" id="wa_income">¥0</div></div>
+          <div class="auto-cell"><div class="al">读书时长</div><div class="av" id="wa_read">0分</div></div>
+          <div class="auto-cell"><div class="al">WB时长</div><div class="av" id="wa_wb">0分</div></div>
+          <div class="auto-cell"><div class="al">运动时长</div><div class="av" id="wa_sport">0分</div></div>
+        </div>
+        <div class="auto-note"><span class="dot2"></span><span id="wa_note">由每日记录自动累加</span></div>
+
+        <div class="sec-head review"><span class="ico">评</span>复盘</div>
+        <div class="f-grid">
+          <div class="field full">
+            <label for="f_wContent">本周小结</label>
+            <textarea id="f_wContent" name="f_wContent" placeholder="这周整体怎么样？四件事各自推进到哪一步？"></textarea>
+          </div>
+          <div class="field full">
+            <label for="f_wGood">做得好的</label>
+            <textarea id="f_wGood" name="f_wGood" placeholder="哪件事、哪个做法有效，值得继续？"></textarea>
+          </div>
+          <div class="field full">
+            <label for="f_wBad">没做好的</label>
+            <textarea id="f_wBad" name="f_wBad" placeholder="卡在哪？是没时间、没方法，还是执行走样？"></textarea>
+          </div>
+          <div class="field full">
+            <label for="f_wNext">下周重点</label>
+            <textarea id="f_wNext" name="f_wNext" placeholder="下周最重要的一件事是什么？其余先放一放"></textarea>
+          </div>
+        </div>
+
+        <div class="form-foot">
+          <button type="submit" class="btn-primary" id="wSubmitBtn">保存本周小结</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>往期周小结</h2>
+      <div class="rec-list" id="weeklyList"><div class="loading">加载中…</div></div>
+    </div>
+  </div>
+
+  <!-- ========== 月总结 ========== -->
+  <div class="view" id="view-monthly">
+    <div class="card">
+      <form id="monthlyForm" autocomplete="off">
+        <div class="f-grid">
+          <div class="field">
+            <label for="f_month">月份</label>
+            <input type="month" id="f_month" name="f_month">
+          </div>
+        </div>
+
+        <div class="sec-head data"><span class="ico">数</span>本月数据</div>
+        <div class="auto-grid" id="monthAutoStats">
+          <div class="auto-cell"><div class="al">涨粉</div><div class="av" id="ma_fans">0</div></div>
+          <div class="auto-cell"><div class="al">闲鱼收入</div><div class="av" id="ma_income">¥0</div></div>
+          <div class="auto-cell"><div class="al">读书时长</div><div class="av" id="ma_read">0分</div></div>
+          <div class="auto-cell"><div class="al">WB时长</div><div class="av" id="ma_wb">0分</div></div>
+          <div class="auto-cell"><div class="al">运动时长</div><div class="av" id="ma_sport">0分</div></div>
+        </div>
+        <div class="auto-note"><span class="dot2"></span><span>由每日记录自动累加</span></div>
+
+        <div class="sec-head review"><span class="ico">结</span>大总结</div>
+        <div class="f-grid">
+          <div class="field full">
+            <label for="f_mContent">本月总结</label>
+            <textarea id="f_mContent" name="f_mContent" style="min-height:120px" placeholder="这个月整体回顾：四件事各自到什么程度？收入、涨粉、读书、WB 各是多少？"></textarea>
+          </div>
+          <div class="field full">
+            <label for="f_mGrowth">最大的成长</label>
+            <textarea id="f_mGrowth" name="f_mGrowth" placeholder="能力上、认知上、习惯上，这个月最大的变化是什么？"></textarea>
+          </div>
+          <div class="field full">
+            <label for="f_mGap">最大的问题</label>
+            <textarea id="f_mGap" name="f_mGap" placeholder="反复出现的问题是什么？根因是能力、精力还是方向？"></textarea>
+          </div>
+          <div class="field full">
+            <label for="f_mTarget">下月目标</label>
+            <textarea id="f_mTarget" name="f_mTarget" placeholder="下个月最重要的目标，越具体越好（带数字）"></textarea>
+          </div>
+        </div>
+
+        <div class="form-foot">
+          <button type="submit" class="btn-primary" id="mSubmitBtn">保存本月总结</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>往期月总结</h2>
+      <div class="rec-list" id="monthlyList"><div class="loading">加载中…</div></div>
+    </div>
+  </div>
+
+  <!-- ========== 看板 ========== -->
+  <div class="view" id="view-dash">
+    <div class="card">
+      <h2>累计看板</h2>
+      <p class="desc">随记录实时更新</p>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="k-label">记录天数</div><div class="k-value" id="k_days">—</div></div>
+        <div class="kpi xy"><div class="k-label">闲鱼收入</div><div class="k-value" id="k_income">—</div></div>
+        <div class="kpi x"><div class="k-label">运营X发帖</div><div class="k-value" id="k_posts">—</div></div>
+        <div class="kpi x"><div class="k-label">涨粉</div><div class="k-value" id="k_fans">—</div></div>
+        <div class="kpi read"><div class="k-label">读书时长</div><div class="k-value" id="k_read">—</div></div>
+        <div class="kpi wb"><div class="k-label">WB时长</div><div class="k-value" id="k_wb">—</div></div>
+      </div>
+      <div class="sec-head xy" style="margin-top:20px"><span class="ico">￥</span>近 14 日闲鱼收入</div>
+      <div class="chart" id="chart"><div class="loading">加载中…</div></div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="tabbar">
+  <button type="button" data-view="daily" class="on"><span class="ti">✎</span>每日</button>
+  <button type="button" data-view="weekly"><span class="ti">▤</span>周小结</button>
+  <button type="button" data-view="monthly"><span class="ti">◷</span>月总结</button>
+  <button type="button" data-view="dash"><span class="ti">◔</span>看板</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+  var GH_OWNER = 'jiazhiwen55';
+  var GH_DATA_REPO = 'life-notes-data';
+  var GH_DATA_PATH = 'records.json';
+  var GH_API = 'https://api.github.com';
+  var API_ORIGIN = location.origin;
+  var API = 'GitHub';
+  var ghToken = '';
+  var ghSha = null;
+  var CODE_KEY = 'dj_gh_token';
+  var DRAFT_DAILY = 'dj_draft_daily_v3';
+  var DRAFT_WEEKLY = 'dj_draft_weekly_v3';
+  var DRAFT_MONTHLY = 'dj_draft_monthly_v3';
+  var PENDING_KEY = 'dj_pending_v3';
+  var SHARE_KEY = 'dj_share';
+  var SHARE_FALLBACK = 'ZA5BOBZEXI';
+  var PAGE_SIZE = 6;
+  var dailyRows = [], weeklyRows = [], monthlyRows = [];
+  var dailyPage = 1;
+  var code = '';
+  var toastTimer = null;
+
+  function currentShareCode() {
+    var q = new URLSearchParams(location.search).get('sharecode');
+    if (q) { lsSet(SHARE_KEY, q); return q; }
+    return lsGet(SHARE_KEY) || SHARE_FALLBACK;
+  }
+  function withShare(url) {
+    var sc = currentShareCode();
+    if (!sc) return url;
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'sharecode=' + encodeURIComponent(sc);
+  }
+  function $(s) { return document.querySelector(s); }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null && text !== '') n.textContent = String(text);
+    return n;
+  }
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  function todayStr(offset) {
+    var d = new Date();
+    if (offset) d.setDate(d.getDate() + offset);
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function thisMonthStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1);
+  }
+  function thisWeekStart() {
+    var d = new Date();
+    var w = d.getDay() === 0 ? 7 : d.getDay();
+    d.setDate(d.getDate() - (w - 1));
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function addDays(dateStr, n) {
+    var d = new Date(dateStr + 'T00:00:00');
+    if (isNaN(d.getTime())) return '';
+    d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function weekLabel(start) {
+    if (!start) return '';
+    return start.substring(5).replace('-', '/') + ' – ' + addDays(start, 6).substring(5).replace('-', '/');
+  }
+  function showMsg(text, kind) {
+    var t = $('#toast');
+    t.textContent = text;
+    t.className = 'toast show ' + (kind || '');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.className = 'toast'; }, 2600);
+  }
+
+  /* ---------- 文本框随内容自动长高 ---------- */
+  function autoGrow(ta) {
+    if (!ta) return;
+    ta.style.height = 'auto';
+    var h = ta.scrollHeight;
+    var max = Math.round(window.innerHeight * 0.7);
+    ta.style.height = Math.min(h, max) + 'px';
+    ta.style.overflowY = h > max ? 'auto' : 'hidden';
+  }
+  function autoGrowAll() {
+    var list = document.querySelectorAll('textarea');
+    for (var i = 0; i < list.length; i++) autoGrow(list[i]);
+  }
+
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 忽略 */ } }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { /* 忽略 */ } }
+
+  function getPending() {
+    var raw = lsGet(PENDING_KEY);
+    if (!raw) return [];
+    try { var p = JSON.parse(raw); return Array.isArray(p) ? p : []; } catch (e) { return []; }
+  }
+  function setPending(list) { lsSet(PENDING_KEY, JSON.stringify(list)); }
+
+  /* ---------- 数据层：GitHub 私有仓库 ---------- */
+
+  function ghHeaders(withJson) {
+    var h = { 'Accept': 'application/vnd.github+json' };
+    if (ghToken) h['Authorization'] = 'token ' + ghToken;
+    if (withJson) h['Content-Type'] = 'application/json';
+    return h;
+  }
+
+  function ghFetch(path, opts) {
+    opts = opts || {};
+    var init = {
+      method: opts.method || 'GET',
+      headers: ghHeaders(!!opts.body),
+      cache: 'no-store'
+    };
+    if (opts.body) init.body = JSON.stringify(opts.body);
+    return fetch(GH_API + path, init).then(function (r) {
+      return r.text().then(function (txt) {
+        var d = {};
+        try { d = JSON.parse(txt); } catch (e) { d = {}; }
+        if (r.status === 401) {
+          var e1 = new Error('令牌无效或已过期');
+          e1.unauthorized = true;
+          throw e1;
+        }
+        if (!r.ok) {
+          var e2 = new Error((d && d.message) || ('GitHub 返回 ' + r.status));
+          e2.status = r.status;
+          throw e2;
+        }
+        return d;
+      });
+    }).catch(function (e) {
+      if (e.unauthorized || e.status) throw e;
+      if (e instanceof TypeError) {
+        throw new Error('连不上 GitHub（' + ((e && e.message) || 'network') + '），请检查网络');
+      }
+      throw e;
+    });
+  }
+
+  function b64encode(str) { return btoa(unescape(encodeURIComponent(str))); }
+  function b64decode(b64) { return decodeURIComponent(escape(atob(String(b64).replace(/\s/g, '')))); }
+
+  function ghLoadRecords() {
+    return ghFetch('/repos/' + GH_OWNER + '/' + GH_DATA_REPO + '/contents/' + GH_DATA_PATH + '?ref=main')
+      .then(function (d) {
+        ghSha = d.sha;
+        var arr = [];
+        try { arr = JSON.parse(b64decode(d.content)); } catch (e) { arr = []; }
+        return Array.isArray(arr) ? arr : [];
+      })
+      .catch(function (e) {
+        if (e.unauthorized) throw e;
+        if (e.status === 404) { ghSha = null; return []; }
+        throw e;
+      });
+  }
+
+  function ghPutRecords(arr) {
+    var body = {
+      message: 'records ' + new Date().toISOString(),
+      content: b64encode(JSON.stringify(arr, null, 2)),
+      branch: 'main'
+    };
+    if (ghSha) body.sha = ghSha;
+    return ghFetch('/repos/' + GH_OWNER + '/' + GH_DATA_REPO + '/contents/' + GH_DATA_PATH, {
+      method: 'PUT',
+      body: body
+    }).then(function (d) {
+      if (d && d.content && d.content.sha) ghSha = d.content.sha;
+    });
+  }
+
+  function recKey(r) {
+    if (r.kind === 'weekly') return String(r.weekStart || '');
+    if (r.kind === 'monthly') return String(r.month || '');
+    return String(r.date || '');
+  }
+
+  function api(path, options) {
+    options = options || {};
+
+    if (path.indexOf('/session') === 0) {
+      return ghFetch('/user').then(function (u) {
+        if (!u || u.login !== GH_OWNER) throw new Error('这个令牌不属于账号 ' + GH_OWNER);
+        return { ok: true };
+      });
+    }
+
+    var method = (options.method || 'GET').toUpperCase();
+
+    return ghLoadRecords().then(function (arr) {
+      if (method === 'GET') {
+        var mq = path.match(/[?&]kind=([a-z]+)/);
+        var kind = mq ? mq[1] : '';
+        var list = arr.filter(function (r) { return !kind || r.kind === kind; });
+        list.sort(function (a, b) { return recKey(b).localeCompare(recKey(a)); });
+        return { records: list };
+      }
+
+      if (method === 'POST') {
+        var rec = options.body || {};
+        var k = recKey(rec);
+        var now = new Date().toISOString();
+        var found = -1;
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i].kind === rec.kind && recKey(arr[i]) === k) { found = i; break; }
+        }
+        if (found >= 0) {
+          arr[found] = Object.assign({}, arr[found], rec, { updatedAt: now });
+        } else {
+          arr.push(Object.assign({ createdAt: now, updatedAt: now }, rec));
+        }
+        return ghPutRecords(arr).then(function () { return { ok: true }; });
+      }
+
+      if (method === 'DELETE') {
+        var mm = path.match(/\/records\/([a-z]+)\/(.+)$/);
+        if (!mm) throw new Error('删除参数不完整');
+        var dk = mm[1], dv = decodeURIComponent(mm[2]);
+        var next = arr.filter(function (r) { return !(r.kind === dk && recKey(r) === dv); });
+        return ghPutRecords(next).then(function () { return { ok: true, removed: arr.length - next.length }; });
+      }
+
+      throw new Error('不支持的操作');
+    });
+  }
+
+  function showLock() { $('#lockView').style.display = 'flex'; }
+  function hideLock() { $('#lockView').style.display = 'none'; }
+  function showCodeErr(msg) {
+    var e = $('#codeErr');
+    e.textContent = msg;
+    e.style.display = 'block';
+  }
+  function tryEnter(inputCode) {
+    var c = String(inputCode || '').trim();
+    if (!c) { showCodeErr('请输入 GitHub 令牌'); return; }
+    ghToken = c;
+    api('/session').then(function () {
+      lsSet(CODE_KEY, c);
+      hideLock();
+      showMsg('已解锁', 'ok');
+      boot();
+    }).catch(function (e) {
+      ghToken = '';
+      showCodeErr(e.unauthorized ? '令牌无效或已过期' : (e.message || '无法连接 GitHub'));
+    });
+  }
+
+  /* ---------- 每日 ---------- */
+  function dailyFromForm() {
+    return {
+      kind: 'daily',
+      date: $('#f_date').value,
+      xReview: $('#f_xReview').value.replace(/^\s+|\s+$/g, ''),
+      xPosts: Number($('#f_xPosts').value) || 0,
+      xFans: Number($('#f_xFans').value) || 0,
+      xInteractions: Number($('#f_xInteractions').value) || 0,
+      xyIncome: Number($('#f_xyIncome').value) || 0,
+      xyReview: $('#f_xyReview').value.replace(/^\s+|\s+$/g, ''),
+      readContent: $('#f_readContent').value.replace(/^\s+|\s+$/g, ''),
+      readReview: $('#f_readReview').value.replace(/^\s+|\s+$/g, ''),
+      readMinutes: Number($('#f_readMinutes').value) || 0,
+      wbMinutes: Number($('#f_wbMinutes').value) || 0,
+      wbContent: $('#f_wbContent').value.replace(/^\s+|\s+$/g, ''),
+      diary: $('#f_diary').value.replace(/^\s+|\s+$/g, ''),
+      sportMinutes: Number($('#f_sportMinutes').value) || 0
+    };
+  }
+  function fillDaily(r) {
+    $('#f_date').value = r.date || todayStr(0);
+    $('#f_xReview').value = r.xReview || '';
+    $('#f_xPosts').value = r.xPosts || '';
+    $('#f_xFans').value = r.xFans || '';
+    $('#f_xInteractions').value = r.xInteractions || '';
+    $('#f_xyIncome').value = r.xyIncome || '';
+    $('#f_xyReview').value = r.xyReview || '';
+    $('#f_readContent').value = r.readContent || '';
+    $('#f_readReview').value = r.readReview || '';
+    $('#f_readMinutes').value = r.readMinutes || '';
+    $('#f_wbMinutes').value = r.wbMinutes || '';
+    $('#f_wbContent').value = r.wbContent || '';
+    $('#f_diary').value = r.diary || '';
+    $('#f_sportMinutes').value = r.sportMinutes || '';
+    autoGrowAll();
+  }
+  function dailyEmpty(r) {
+    return !(r.diary || r.xReview || r.xyReview || r.readContent || r.readReview || r.wbContent ||
+             r.xPosts || r.xFans || r.xInteractions || r.xyIncome || r.readMinutes || r.wbMinutes ||
+             r.sportMinutes);
+  }
+
+  /* ---------- 周小结 ---------- */
+  function weeklyFromForm() {
+    return {
+      kind: 'weekly',
+      weekStart: $('#f_weekStart').value,
+      title: $('#f_wTitle').value.replace(/^\s+|\s+$/g, ''),
+      content: $('#f_wContent').value.replace(/^\s+|\s+$/g, ''),
+      good: $('#f_wGood').value.replace(/^\s+|\s+$/g, ''),
+      bad: $('#f_wBad').value.replace(/^\s+|\s+$/g, ''),
+      next: $('#f_wNext').value.replace(/^\s+|\s+$/g, '')
+    };
+  }
+  function fillWeekly(r) {
+    $('#f_weekStart').value = r.weekStart || thisWeekStart();
+    $('#f_wTitle').value = r.title || '';
+    $('#f_wContent').value = r.content || '';
+    $('#f_wGood').value = r.good || '';
+    $('#f_wBad').value = r.bad || '';
+    $('#f_wNext').value = r.next || '';
+    updateWeekAuto(r.weekStart);
+    autoGrowAll();
+  }
+
+  /* ---------- 月总结 ---------- */
+  function monthlyFromForm() {
+    return {
+      kind: 'monthly',
+      month: $('#f_month').value,
+      content: $('#f_mContent').value.replace(/^\s+|\s+$/g, ''),
+      growth: $('#f_mGrowth').value.replace(/^\s+|\s+$/g, ''),
+      gap: $('#f_mGap').value.replace(/^\s+|\s+$/g, ''),
+      target: $('#f_mTarget').value.replace(/^\s+|\s+$/g, '')
+    };
+  }
+  function fillMonthly(r) {
+    $('#f_month').value = r.month || thisMonthStr();
+    $('#f_mContent').value = r.content || '';
+    $('#f_mGrowth').value = r.growth || '';
+    $('#f_mGap').value = r.gap || '';
+    $('#f_mTarget').value = r.target || '';
+    updateMonthAuto(r.month);
+    autoGrowAll();
+  }
+
+  /* ---------- 自动累加 ---------- */
+  function sumRange(from, to) {
+    var s = { posts: 0, fans: 0, inter: 0, income: 0, read: 0, wb: 0, sport: 0, days: 0 };
+    for (var i = 0; i < dailyRows.length; i++) {
+      var r = dailyRows[i];
+      var d = (r.date || '').substring(0, 10);
+      if (!d) continue;
+      if (d < from || d > to) continue;
+      s.posts += Number(r.xPosts) || 0;
+      s.fans += Number(r.xFans) || 0;
+      s.inter += Number(r.xInteractions) || 0;
+      s.income += Number(r.xyIncome) || 0;
+      s.read += Number(r.readMinutes) || 0;
+      s.wb += Number(r.wbMinutes) || 0;
+      s.sport += Number(r.sportMinutes) || 0;
+      s.days += 1;
+    }
+    return s;
+  }
+  function updateWeekAuto(weekStart) {
+    if (!weekStart) weekStart = $('#f_weekStart').value || thisWeekStart();
+    var end = addDays(weekStart, 6);
+    var s = sumRange(weekStart, end);
+    $('#wa_fans').textContent = s.fans;
+    $('#wa_income').textContent = '¥' + s.income.toFixed(2);
+    $('#wa_read').textContent = s.read + '分';
+    $('#wa_wb').textContent = s.wb + '分';
+    $('#wa_sport').textContent = s.sport + '分';
+    $('#wa_note').textContent = '由每日记录实时累加 · 本周 ' + s.days + ' 天有记录';
+  }
+  function updateMonthAuto(month) {
+    if (!month) month = $('#f_month').value || thisMonthStr();
+    var s = sumRange(month + '-01', month + '-31');
+    $('#ma_fans').textContent = s.fans;
+    $('#ma_income').textContent = '¥' + s.income.toFixed(2);
+    $('#ma_read').textContent = s.read + '分';
+    $('#ma_wb').textContent = s.wb + '分';
+    $('#ma_sport').textContent = s.sport + '分';
+  }
+
+  /* ---------- 保存 ---------- */
+  function saveRecord(rec, draftKey, btnId, btnText, doneMsg) {
+    var btn = $(btnId);
+    btn.disabled = true;
+    btn.textContent = '保存中…';
+    return api('/records', { method: 'POST', body: rec }).then(function () {
+      btn.disabled = false;
+      btn.textContent = btnText;
+      lsDel(draftKey);
+      openKeys = {};              /* 保存后历史列表全部收起 */
+      showMsg(doneMsg, 'ok');
+      return loadAll();
+    }).catch(function (err) {
+      btn.disabled = false;
+      btn.textContent = btnText;
+      if (err.unauthorized) { showLock(); return null; }
+      var pending = getPending();
+      pending.push(rec);
+      setPending(pending);
+      setOffline(true);
+      showMsg('离线中，已暂存本机', 'err');
+      return loadAll();
+    });
+  }
+
+  function flushPending() {
+    var pending = getPending();
+    if (!pending.length) return Promise.resolve();
+    var chain = Promise.resolve();
+    pending.forEach(function (rec) {
+      chain = chain.then(function () {
+        return api('/records', { method: 'POST', body: rec });
+      }).catch(function () { return null; });
+    });
+    return chain.then(function () { setPending([]); setOffline(false); });
+  }
+
+  /* ---------- 加载 ---------- */
+  /* 周/月汇总：由每日记录在本地累加（原来由服务端算） */
+  function autoSumOf(from, to) {
+    var s = { xFans: 0, xianyuIncome: 0, readMinutes: 0, wbMinutes: 0, sportMinutes: 0, days: 0 };
+    for (var i = 0; i < dailyRows.length; i++) {
+      var r = dailyRows[i];
+      var d = (r.date || '').substring(0, 10);
+      if (!d) continue;
+      if (d < from || d > to) continue;
+      s.xFans += Number(r.xFans) || 0;
+      s.xianyuIncome += Number(r.xyIncome) || 0;
+      s.readMinutes += Number(r.readMinutes) || 0;
+      s.wbMinutes += Number(r.wbMinutes) || 0;
+      s.sportMinutes += Number(r.sportMinutes) || 0;
+      s.days += 1;
+    }
+    s.xianyuIncome = Math.round(s.xianyuIncome * 100) / 100;
+    return s;
+  }
+
+  function applyAutoSums() {
+    var i, s;
+    for (i = 0; i < weeklyRows.length; i++) {
+      var w = weeklyRows[i];
+      if (!w.weekStart) continue;
+      s = autoSumOf(w.weekStart, addDays(w.weekStart, 6));
+      w.xFans = s.xFans; w.xianyuIncome = s.xianyuIncome;
+      w.readMinutes = s.readMinutes; w.wbMinutes = s.wbMinutes;
+      w.sportMinutes = s.sportMinutes; w.days = s.days;
+    }
+    for (i = 0; i < monthlyRows.length; i++) {
+      var m = monthlyRows[i];
+      if (!m.month) continue;
+      s = autoSumOf(m.month + '-01', m.month + '-31');
+      m.xFans = s.xFans; m.xianyuIncome = s.xianyuIncome;
+      m.readMinutes = s.readMinutes; m.wbMinutes = s.wbMinutes;
+      m.sportMinutes = s.sportMinutes; m.days = s.days;
+    }
+  }
+
+  function loadAll() {
+    return api('/records').then(function (data) {
+      var list = data.records || [];
+      dailyRows = []; weeklyRows = []; monthlyRows = [];
+      list.forEach(function (r) {
+        var k = r.kind || 'daily';
+        if (k === 'weekly') weeklyRows.push(r);
+        else if (k === 'monthly') monthlyRows.push(r);
+        else dailyRows.push(r);
+      });
+      lsSet('dj_cache_v3', JSON.stringify(list));
+      applyAutoSums();
+      renderDaily(); renderWeekly(); renderMonthly(); renderStats();
+      updateWeekAuto($('#f_weekStart').value);
+      updateMonthAuto($('#f_month').value);
+      return flushPending();
+    }).catch(function (err) {
+      if (err.unauthorized) { showLock(); return; }
+      var cached = lsGet('dj_cache_v3');
+      if (cached) {
+        try {
+          var list = JSON.parse(cached) || [];
+          dailyRows = []; weeklyRows = []; monthlyRows = [];
+          list.forEach(function (r) {
+            var k = r.kind || 'daily';
+            if (k === 'weekly') weeklyRows.push(r);
+            else if (k === 'monthly') monthlyRows.push(r);
+            else dailyRows.push(r);
+          });
+          applyAutoSums();
+          renderDaily(); renderWeekly(); renderMonthly(); renderStats();
+        } catch (e2) { /* 忽略 */ }
+      }
+      setOffline(true);
+    });
+  }
+
+  /* ---------- 历史记录折叠：展开状态按 key 记住，重渲染后保持 ---------- */
+  var openKeys = {};
+  function bindCollapse(rec, head, key) {
+    if (openKeys[key]) rec.classList.add('open');
+    head.addEventListener('click', function () {
+      var open = rec.classList.toggle('open');
+      if (open) openKeys[key] = 1; else delete openKeys[key];
+    });
+  }
+
+  function renderDaily() {
+    var box = $('#dailyList');
+    box.innerHTML = '';
+    var total = dailyRows.length;
+    var pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (dailyPage > pages) dailyPage = pages;
+    if (dailyPage < 1) dailyPage = 1;
+    $('#dPage').textContent = '第 ' + dailyPage + ' / ' + pages + ' 页 · 共 ' + total + ' 天';
+    $('#dPrev').disabled = dailyPage <= 1;
+    $('#dNext').disabled = dailyPage >= pages;
+    if (!total) { box.appendChild(el('div', 'empty', '暂无记录。今天写第一条吧。')); return; }
+
+    var start = (dailyPage - 1) * PAGE_SIZE;
+    var end = Math.min(start + PAGE_SIZE, total);
+    for (var i = start; i < end; i++) {
+      var r = dailyRows[i];
+      var rec = el('div', 'rec');
+      var head = el('div', 'rec-head');
+      head.appendChild(el('span', 'r-date', r.date || '未填日期'));
+      if (r.xPosts || r.xFans || r.xInteractions || r.xReview) head.appendChild(el('span', 'r-tag tag-x', '运营X'));
+      if (r.xyIncome || r.xyReview) head.appendChild(el('span', 'r-tag tag-xy', '闲鱼'));
+      if (r.readMinutes || r.readContent) head.appendChild(el('span', 'r-tag tag-read', '读书'));
+      if (r.wbMinutes || r.wbContent) head.appendChild(el('span', 'r-tag tag-wb', 'WB'));
+      if (r.diary) head.appendChild(el('span', 'r-tag tag-diary', '日记'));
+      if (r.sportMinutes) head.appendChild(el('span', 'r-tag tag-sport', '运动'));
+      head.appendChild(el('span', 'chev', '\u203a'));
+
+      var body = el('div', 'rec-body');
+      if (r.xReview) body.appendChild(block('x', '运营X 反思', r.xReview));
+      if (r.xyReview) body.appendChild(block('xy', '闲鱼 反思', r.xyReview));
+      if (r.readContent) body.appendChild(block('read', '读书内容', r.readContent));
+      if (r.readReview) body.appendChild(block('read', '读书反思', r.readReview));
+      if (r.wbContent) body.appendChild(block('wb', 'WB 学会的', r.wbContent));
+      if (r.diary) body.appendChild(block('diary', '日记', r.diary));
+
+      var pairs = [
+        ['发帖', r.xPosts], ['涨粉', r.xFans], ['互动', r.xInteractions],
+        ['闲鱼收入', r.xyIncome ? '¥' + Number(r.xyIncome).toFixed(2) : ''],
+        ['读书', r.readMinutes ? r.readMinutes + ' 分' : ''],
+        ['WB', r.wbMinutes ? r.wbMinutes + ' 分' : ''],
+        ['运动', r.sportMinutes ? r.sportMinutes + ' 分' : '']
+      ];
+      var stats = el('div', 'rec-stats');
+      for (var p = 0; p < pairs.length; p++) {
+        if (!pairs[p][1]) continue;
+        var chip = el('span', 'chip');
+        chip.appendChild(el('b', '', pairs[p][0] + ' '));
+        chip.appendChild(document.createTextNode(String(pairs[p][1])));
+        stats.appendChild(chip);
+      }
+      if (stats.childNodes.length) body.appendChild(stats);
+
+      var act = el('div', 'rec-act');
+      var editBtn = el('button', 'btn-ghost', '载入修改');
+      editBtn.type = 'button';
+      act.appendChild(editBtn);
+      body.appendChild(act);
+
+      (function (row) {
+        editBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          fillDaily(row);
+          switchView('daily');
+          showMsg('已载入这条，可直接修改');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      })(r);
+
+      rec.appendChild(head);
+      rec.appendChild(body);
+      bindCollapse(rec, head, 'd:' + (r.date || ('i' + i)));
+      box.appendChild(rec);
+    }
+  }
+  function block(cls, label, text) {
+    var d = el('div', 'rec-block ' + cls);
+    d.appendChild(el('span', 'bl', label));
+    d.appendChild(document.createTextNode(text));
+    return d;
+  }
+
+  function renderWeekly() {
+    var box = $('#weeklyList');
+    box.innerHTML = '';
+    if (!weeklyRows.length) { box.appendChild(el('div', 'empty', '还没有周小结。')); return; }
+    for (var i = 0; i < weeklyRows.length; i++) {
+      var r = weeklyRows[i];
+      var rec = el('div', 'rec');
+      var head = el('div', 'rec-head');
+      head.appendChild(el('span', 'r-date', weekLabel(r.weekStart) || '未填周起始日'));
+      if (r.title) head.appendChild(el('span', 'r-tag tag-x', r.title));
+      head.appendChild(el('span', 'chev', '\u203a'));
+
+      var body = el('div', 'rec-body');
+      if (r.content) body.appendChild(block('', '本周小结', r.content));
+      if (r.good) body.appendChild(block('', '做得好', r.good));
+      if (r.bad) body.appendChild(block('', '没做好', r.bad));
+      if (r.next) body.appendChild(block('', '下周重点', r.next));
+      var pairs = [
+        ['涨粉', r.xFans],
+        ['闲鱼收入', r.xianyuIncome ? '¥' + Number(r.xianyuIncome).toFixed(2) : ''],
+        ['读书', r.readMinutes ? r.readMinutes + ' 分' : ''],
+        ['WB', r.wbMinutes ? r.wbMinutes + ' 分' : ''],
+        ['运动', r.sportMinutes ? r.sportMinutes + ' 分' : '']
+      ];
+      var stats = el('div', 'rec-stats');
+      for (var p = 0; p < pairs.length; p++) {
+        if (!pairs[p][1]) continue;
+        var chip = el('span', 'chip');
+        chip.appendChild(el('b', '', pairs[p][0] + ' '));
+        chip.appendChild(document.createTextNode(String(pairs[p][1])));
+        stats.appendChild(chip);
+      }
+      if (stats.childNodes.length) body.appendChild(stats);
+
+      var act = el('div', 'rec-act');
+      var editBtn = el('button', 'btn-ghost', '载入修改');
+      editBtn.type = 'button';
+      act.appendChild(editBtn);
+      body.appendChild(act);
+
+      (function (row) {
+        editBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          fillWeekly(row);
+          switchView('weekly');
+          showMsg('已载入这条，可直接修改');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      })(r);
+
+      rec.appendChild(head);
+      rec.appendChild(body);
+      bindCollapse(rec, head, 'w:' + (r.weekStart || ('i' + i)));
+      box.appendChild(rec);
+    }
+  }
+
+  function renderMonthly() {
+    var box = $('#monthlyList');
+    box.innerHTML = '';
+    if (!monthlyRows.length) { box.appendChild(el('div', 'empty', '还没有月总结。')); return; }
+    for (var i = 0; i < monthlyRows.length; i++) {
+      var r = monthlyRows[i];
+      var rec = el('div', 'rec');
+      var head = el('div', 'rec-head');
+      head.appendChild(el('span', 'r-date', r.month || '未填月份'));
+      head.appendChild(el('span', 'chev', '\u203a'));
+
+      var body = el('div', 'rec-body');
+      if (r.content) body.appendChild(block('', '本月总结', r.content));
+      if (r.growth) body.appendChild(block('', '最大成长', r.growth));
+      if (r.gap) body.appendChild(block('', '最大问题', r.gap));
+      if (r.target) body.appendChild(block('', '下月目标', r.target));
+      var pairs = [
+        ['涨粉', r.xFans],
+        ['闲鱼收入', r.xianyuIncome ? '¥' + Number(r.xianyuIncome).toFixed(2) : ''],
+        ['读书', r.readMinutes ? r.readMinutes + ' 分' : ''],
+        ['WB', r.wbMinutes ? r.wbMinutes + ' 分' : ''],
+        ['运动', r.sportMinutes ? r.sportMinutes + ' 分' : '']
+      ];
+      var stats = el('div', 'rec-stats');
+      for (var p = 0; p < pairs.length; p++) {
+        if (!pairs[p][1]) continue;
+        var chip = el('span', 'chip');
+        chip.appendChild(el('b', '', pairs[p][0] + ' '));
+        chip.appendChild(document.createTextNode(String(pairs[p][1])));
+        stats.appendChild(chip);
+      }
+      if (stats.childNodes.length) body.appendChild(stats);
+
+      var act = el('div', 'rec-act');
+      var editBtn = el('button', 'btn-ghost', '载入修改');
+      editBtn.type = 'button';
+      act.appendChild(editBtn);
+      body.appendChild(act);
+
+      (function (row) {
+        editBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          fillMonthly(row);
+          switchView('monthly');
+          showMsg('已载入这条，可直接修改');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      })(r);
+
+      rec.appendChild(head);
+      rec.appendChild(body);
+      bindCollapse(rec, head, 'm:' + (r.month || ('i' + i)));
+      box.appendChild(rec);
+    }
+  }
+
+  function renderStats() {
+    var income = 0, posts = 0, fans = 0, readMin = 0, wbMin = 0;
+    var byDay = {};
+    for (var i = 0; i < dailyRows.length; i++) {
+      var r = dailyRows[i];
+      income += Number(r.xyIncome) || 0;
+      posts += Number(r.xPosts) || 0;
+      fans += Number(r.xFans) || 0;
+      readMin += Number(r.readMinutes) || 0;
+      wbMin += Number(r.wbMinutes) || 0;
+      if (r.date) byDay[r.date.substring(0, 10)] = Number(r.xyIncome) || 0;
+    }
+    $('#k_days').textContent = dailyRows.length;
+    $('#k_income').textContent = '¥' + income.toFixed(0);
+    $('#k_posts').textContent = posts;
+    $('#k_fans').textContent = fans;
+    $('#k_read').textContent = Math.round(readMin / 60 * 10) / 10 + 'h';
+    $('#k_wb').textContent = Math.round(wbMin / 60 * 10) / 10 + 'h';
+
+    var box = $('#chart');
+    box.innerHTML = '';
+    var days = [], max = 0;
+    for (var d = 13; d >= 0; d--) {
+      var k2 = todayStr(-d);
+      var v = byDay[k2] || 0;
+      if (v > max) max = v;
+      days.push({ key: k2, val: v });
+    }
+    for (var t = 0; t < days.length; t++) {
+      var col = el('div', 'bar-col');
+      var bar = el('div', 'bar');
+      var val = days[t].val;
+      var pct = max > 0 ? Math.round(val / max * 100) : 0;
+      bar.style.height = (val > 0 ? Math.max(pct, 5) : 1) + '%';
+      col.appendChild(bar);
+      col.appendChild(el('div', 'bar-lab', days[t].key.substring(8) + (val > 0 ? ' ¥' + val.toFixed(0) : '')));
+      box.appendChild(col);
+    }
+  }
+
+  function switchView(name) {
+    var views = document.querySelectorAll('.view');
+    for (var i = 0; i < views.length; i++) views[i].classList.remove('on');
+    $('#view-' + name).classList.add('on');
+    var btns = document.querySelectorAll('.tabbar button');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].className = (btns[j].getAttribute('data-view') === name) ? 'on' : '';
+    }
+  }
+  function setOffline(on) { $('#offlineBar').className = on ? 'offline-bar on' : 'offline-bar'; }
+
+  function boot() {
+    if (!$('#f_date').value) $('#f_date').value = todayStr(0);
+    if (!$('#f_weekStart').value) $('#f_weekStart').value = thisWeekStart();
+    if (!$('#f_month').value) $('#f_month').value = thisMonthStr();
+    restoreDrafts();
+    updateWeekAuto($('#f_weekStart').value);
+    updateMonthAuto($('#f_month').value);
+    loadAll();
+  }
+  function saveDrafts() {
+    lsSet(DRAFT_DAILY, JSON.stringify(dailyFromForm()));
+    lsSet(DRAFT_WEEKLY, JSON.stringify(weeklyFromForm()));
+    lsSet(DRAFT_MONTHLY, JSON.stringify(monthlyFromForm()));
+  }
+  function restoreDrafts() {
+    var d = lsGet(DRAFT_DAILY);
+    if (d) { try { fillDaily(JSON.parse(d)); } catch (e) { /* 忽略 */ } }
+    var w = lsGet(DRAFT_WEEKLY);
+    if (w) { try { fillWeekly(JSON.parse(w)); } catch (e) { /* 忽略 */ } }
+    var m = lsGet(DRAFT_MONTHLY);
+    if (m) { try { fillMonthly(JSON.parse(m)); } catch (e) { /* 忽略 */ } }
+  }
+
+  function init() {
+    $('#codeBtn').addEventListener('click', function () { tryEnter($('#codeInput').value); });
+    $('#codeInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); tryEnter($('#codeInput').value); }
+    });
+
+    $('#dailyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var rec = dailyFromForm();
+      if (!rec.date) { showMsg('先选一个日期', 'err'); return; }
+      if (dailyEmpty(rec)) { showMsg('至少写一点内容或填个数字', 'err'); return; }
+      saveRecord(rec, DRAFT_DAILY, '#submitBtn', '保存今日记录', '今日记录已保存');
+    });
+    $('#weeklyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var rec = weeklyFromForm();
+      if (!rec.weekStart) { showMsg('先选周起始日', 'err'); return; }
+      if (!rec.title && !rec.content && !rec.good && !rec.bad && !rec.next) {
+        showMsg('写点小结内容再保存', 'err'); return;
+      }
+      saveRecord(rec, DRAFT_WEEKLY, '#wSubmitBtn', '保存本周小结', '周小结已保存');
+    });
+    $('#monthlyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var rec = monthlyFromForm();
+      if (!rec.month) { showMsg('先选月份', 'err'); return; }
+      if (!rec.content && !rec.growth && !rec.gap && !rec.target) {
+        showMsg('写点总结内容再保存', 'err'); return;
+      }
+      saveRecord(rec, DRAFT_MONTHLY, '#mSubmitBtn', '保存本月总结', '月总结已保存');
+    });
+
+    ['dailyForm', 'weeklyForm', 'monthlyForm'].forEach(function (id) {
+      var f = document.getElementById(id);
+      f.addEventListener('input', saveDrafts);
+      f.addEventListener('change', saveDrafts);
+    });
+
+    // 文本框随内容自动长高
+    var textareas = document.querySelectorAll('textarea');
+    for (var ti = 0; ti < textareas.length; ti++) {
+      (function (ta) {
+        ta.addEventListener('input', function () { autoGrow(ta); });
+        ta.addEventListener('focus', function () { autoGrow(ta); });
+      })(textareas[ti]);
+    }
+    autoGrowAll();
+    window.addEventListener('resize', autoGrowAll);
+
+    $('#f_weekStart').addEventListener('change', function () { updateWeekAuto(this.value); });
+    $('#f_month').addEventListener('change', function () { updateMonthAuto(this.value); });
+
+    $('#reloadBtn').addEventListener('click', function () { loadAll(); showMsg('已刷新'); });
+    $('#dPrev').addEventListener('click', function () { if (dailyPage > 1) { dailyPage--; renderDaily(); } });
+    $('#dNext').addEventListener('click', function () { dailyPage++; renderDaily(); });
+
+    var tabs = document.querySelectorAll('.tabbar button');
+    for (var i = 0; i < tabs.length; i++) {
+      (function (btn) {
+        btn.addEventListener('click', function () { switchView(btn.getAttribute('data-view')); });
+      })(tabs[i]);
+    }
+
+    window.addEventListener('online', function () { setOffline(false); flushPending().then(loadAll); });
+    window.addEventListener('offline', function () { setOffline(true); });
+
+    // 环境自检
+    (function envCheck() {
+      var dl = document.getElementById('diagLine');
+      if (dl) dl.textContent = '页面：' + (location.host || '') + ' ｜ 数据：GitHub ' + GH_OWNER + '/' + GH_DATA_REPO;
+    })();
+
+    ghToken = lsGet(CODE_KEY) || '';
+    if (ghToken) {
+      api('/session').then(function () { hideLock(); boot(); }).catch(function () {
+        ghToken = ''; showLock();
+      });
+    } else {
+      showLock();
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>
